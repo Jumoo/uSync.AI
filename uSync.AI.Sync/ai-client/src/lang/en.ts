@@ -20,4 +20,13 @@ export default {
   usyncpublish: {
     ...items,
   },
+  // Labels for the tool scopes in uSync.AI.Tools, shown where an agent's tools are picked.
+  // Umbraco.AI looks them up as `uaiToolScope_{camelCase(scopeId)}Label` and falls back to the
+  // scope id. They live in this bundle so that package doesn't need a client of its own.
+  uaiToolScope: {
+    usyncReadLabel: "uSync (read)",
+    usyncReadDescription: "Run uSync reports and list handlers. Changes nothing.",
+    usyncWriteLabel: "uSync (write)",
+    usyncWriteDescription: "Run uSync exports and imports. Imports change the site.",
+  },
 };
