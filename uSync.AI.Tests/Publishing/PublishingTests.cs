@@ -208,17 +208,17 @@ public class PublishingTests
     }
 
     [Test]
-    public async Task Prompt_WithoutTheDependenciesFlag_BringsItsProfileChain_ByDefault()
+    public async Task Prompt_WithoutTheDependenciesFlag_BringsItsProfile_ByDefault()
     {
         var prompt = new AIPrompt { Alias = "summarise", Name = "Summarise", Instructions = "x", ProfileId = ProfileId }.WithId(ItemId);
 
         var result = await new AIPromptDependencyChecker(_dependencies).GetDependenciesAsync(prompt, DependencyFlags.None);
 
-        Assert.That(Types(result), Does.Contain($"umbraco-ai-profile:{ProfileId}").And.Contain($"umbraco-ai-connection:{ConnectionId}"));
+        Assert.That(Types(result), Does.Contain($"umbraco-ai-profile:{ProfileId}"));
     }
 
     [Test]
-    public async Task Prompt_BringsItsProfilesWholeChain_WithEachItemOnce()
+    public async Task Prompt_BringsItsDirectDependencies_WithEachItemOnce()
     {
         var prompt = new AIPrompt
         {
@@ -233,9 +233,10 @@ public class PublishingTests
 
         var result = await new AIPromptDependencyChecker(_dependencies).GetDependenciesAsync(prompt, WithDependencies);
 
+        // not the profile's connection: uSync.Complete asks the profile's checker for that, so
+        // it caches it against the profile and a change to the profile is picked up.
         Assert.That(Types(result), Is.EquivalentTo(new[]
         {
-            $"umbraco-ai-connection:{ConnectionId}",
             $"umbraco-ai-guardrail:{GuardrailId}",
             $"umbraco-ai-context:{ContextId}",
             $"umbraco-ai-context:{OtherContextId}",
@@ -267,7 +268,7 @@ public class PublishingTests
     }
 
     [Test]
-    public async Task StandardAgent_BringsItsProfileChainGuardrailsAndConfigContexts()
+    public async Task StandardAgent_BringsItsProfileGuardrailsAndConfigContexts()
     {
         var agent = new AIAgent
         {
@@ -282,9 +283,7 @@ public class PublishingTests
 
         Assert.That(Types(result), Is.EquivalentTo(new[]
         {
-            $"umbraco-ai-connection:{ConnectionId}",
             $"umbraco-ai-guardrail:{GuardrailId}",
-            $"umbraco-ai-context:{ContextId}",
             $"umbraco-ai-context:{OtherContextId}",
             $"umbraco-ai-profile:{ProfileId}",
             $"umbraco-ai-agent:{ItemId}",

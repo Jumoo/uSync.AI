@@ -40,8 +40,9 @@ public class AIContextHandler : SyncAIHandlerBase<AIContext>, ISyncHandler,
         ISyncConfigService uSyncConfig,
         ISyncItemFactory itemFactory,
         SyncAIPendingDeletes pendingDeletes,
+        IEventAggregator eventAggregator,
         SyncAIService aiService)
-        : base(logger, appCaches, shortStringHelper, syncFileService, mutexService, uSyncConfig, itemFactory, pendingDeletes)
+        : base(logger, appCaches, shortStringHelper, syncFileService, mutexService, uSyncConfig, itemFactory, pendingDeletes, eventAggregator)
     {
         _aiService = aiService;
     }

@@ -42,8 +42,9 @@ public class AIAgentHandler : SyncAIHandlerBase<AIAgent>, ISyncHandler,
         ISyncConfigService uSyncConfig,
         ISyncItemFactory itemFactory,
         SyncAIPendingDeletes pendingDeletes,
+        IEventAggregator eventAggregator,
         SyncAIAgentService agentService)
-        : base(logger, appCaches, shortStringHelper, syncFileService, mutexService, uSyncConfig, itemFactory, pendingDeletes)
+        : base(logger, appCaches, shortStringHelper, syncFileService, mutexService, uSyncConfig, itemFactory, pendingDeletes, eventAggregator)
     {
         _agentService = agentService;
     }

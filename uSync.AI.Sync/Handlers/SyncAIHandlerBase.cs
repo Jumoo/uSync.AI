@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Strings;
@@ -21,6 +22,7 @@ public abstract class SyncAIHandlerBase<TObject> : SyncHandlerRoot<TObject, TObj
     where TObject : class
 {
     private readonly SyncAIPendingDeletes _pendingDeletes;
+    private readonly IEventAggregator _eventAggregator;
 
     public override string Group => uSyncAI.GroupName;
 
@@ -32,10 +34,12 @@ public abstract class SyncAIHandlerBase<TObject> : SyncHandlerRoot<TObject, TObj
         ISyncEventService mutexService,
         ISyncConfigService uSyncConfig,
         ISyncItemFactory itemFactory,
-        SyncAIPendingDeletes pendingDeletes)
+        SyncAIPendingDeletes pendingDeletes,
+        IEventAggregator eventAggregator)
         : base(logger, appCaches, shortStringHelper, syncFileService, mutexService, uSyncConfig, itemFactory)
     {
         _pendingDeletes = pendingDeletes;
+        _eventAggregator = eventAggregator;
     }
 
     protected abstract Task<IEnumerable<TObject>> GetAllAsync();
@@ -62,8 +66,11 @@ public abstract class SyncAIHandlerBase<TObject> : SyncHandlerRoot<TObject, TObj
         => useGuid ? GetKey(item).ToString() : GetAlias(item).ToSafeFileName(shortStringHelper);
 
     /// <summary>Forward an AI saved notification into uSync's export-on-save.</summary>
-    protected Task OnSavedAsync(TObject entity, EventMessages messages, CancellationToken cancellationToken)
-        => HandleAsync(new AISavedNotification<TObject>(entity, messages), cancellationToken);
+    protected async Task OnSavedAsync(TObject entity, EventMessages messages, CancellationToken cancellationToken)
+    {
+        await HandleAsync(new AISavedNotification<TObject>(entity, messages), cancellationToken);
+        await PublishChangedAsync(GetKey(entity), cancellationToken);
+    }
 
     /// <summary>Remember the entity while it still exists - see <see cref="SyncAIPendingDeletes"/>.</summary>
     protected async Task OnDeletingAsync(Guid id)
@@ -72,8 +79,16 @@ public abstract class SyncAIHandlerBase<TObject> : SyncHandlerRoot<TObject, TObj
     }
 
     /// <summary>Forward an AI deleted notification into uSync's delete-marker logic.</summary>
-    protected Task OnDeletedAsync(Guid id, EventMessages messages, CancellationToken cancellationToken)
-        => _pendingDeletes.Take<TObject>(id) is { } entity
-            ? HandleAsync(new AIDeletedNotification<TObject>(entity, messages), cancellationToken)
-            : Task.CompletedTask;
+    protected async Task OnDeletedAsync(Guid id, EventMessages messages, CancellationToken cancellationToken)
+    {
+        if (_pendingDeletes.Take<TObject>(id) is { } entity)
+            await HandleAsync(new AIDeletedNotification<TObject>(entity, messages), cancellationToken);
+
+        await PublishChangedAsync(id, cancellationToken);
+    }
+
+    // published whether or not uSync acted on the change (it doesn't during an import), so a
+    // cache on a server that receives a push is cleared too.
+    private Task PublishChangedAsync(Guid key, CancellationToken cancellationToken)
+        => _eventAggregator.PublishAsync(new SyncAIItemChangedNotification(Udi.Create(EntityType, key)), cancellationToken);
 }

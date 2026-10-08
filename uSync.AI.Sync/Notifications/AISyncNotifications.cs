@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 
@@ -19,6 +20,20 @@ internal sealed class AISavedNotification<T> : SavedNotification<T>
 internal sealed class AIDeletedNotification<T> : DeletedNotification<T>
 {
     public AIDeletedNotification(T target, EventMessages messages) : base(target, messages) { }
+}
+
+/// <summary>
+/// Published whenever an AI item is saved or deleted - in the backoffice, through the API, or
+/// by a uSync import - so anything that caches what it knows about the item can forget it.
+/// uSync.AI.Complete uses it to clear uSync.Complete's dependency cache, which only listens for
+/// Umbraco's own entities.
+/// </summary>
+public sealed class SyncAIItemChangedNotification : INotification
+{
+    public SyncAIItemChangedNotification(Udi udi) => Udi = udi;
+
+    /// <summary>The item that changed, as the UDI its uSync handler and checkers use.</summary>
+    public Udi Udi { get; }
 }
 
 /// <summary>

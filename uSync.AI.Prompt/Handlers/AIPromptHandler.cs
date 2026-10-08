@@ -42,8 +42,9 @@ public class AIPromptHandler : SyncAIHandlerBase<AIPrompt>, ISyncHandler,
         ISyncConfigService uSyncConfig,
         ISyncItemFactory itemFactory,
         SyncAIPendingDeletes pendingDeletes,
+        IEventAggregator eventAggregator,
         SyncAIPromptService promptService)
-        : base(logger, appCaches, shortStringHelper, syncFileService, mutexService, uSyncConfig, itemFactory, pendingDeletes)
+        : base(logger, appCaches, shortStringHelper, syncFileService, mutexService, uSyncConfig, itemFactory, pendingDeletes, eventAggregator)
     {
         _promptService = promptService;
     }
