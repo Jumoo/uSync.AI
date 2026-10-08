@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<RootNamespace>uSync.AI.Tools</RootNamespace>
+
+		<PackageId>uSync.AI.Tools</PackageId>
+		<Product>uSync.AI.Tools</Product>
+		<Title>uSync tools for Umbraco.AI agents</Title>
+		<Description>Umbraco.AI agent tools that run uSync reports, exports and imports, gated by the acting user's uSync permissions.</Description>
+		<PackageTags>umbraco usync ai agent tools umbraco-marketplace</PackageTags>
+
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="readme.md" Pack="true" PackagePath="\" />
+		<PackageReference Include="uSync.BackOffice" />
+		<PackageReference Include="Umbraco.AI.Core" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="uSync.AI.Tests" />
+	</ItemGroup>
+</Project>

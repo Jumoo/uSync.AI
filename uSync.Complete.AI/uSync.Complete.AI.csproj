@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!-- Meta package: no assembly of its own, only dependencies on the packages below. -->
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<IncludeSymbols>false</IncludeSymbols>
+		<SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
+
+		<PackageId>uSync.Complete.AI</PackageId>
+		<Product>uSync.Complete.AI</Product>
+		<Title>uSync.Complete.AI</Title>
+		<Description>uSync.Complete for Umbraco.AI. Installs uSync.AI plus publisher push/pull and agent tools for uSync.Complete.</Description>
+		<PackageTags>umbraco usync ai umbraco-marketplace</PackageTags>
+
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="readme.md" Pack="true" PackagePath="\" />
+		<ProjectReference Include="../uSync.AI/uSync.AI.csproj" />
+		<ProjectReference Include="../uSync.AI.Complete/uSync.AI.Complete.csproj" />
+	</ItemGroup>
+</Project>

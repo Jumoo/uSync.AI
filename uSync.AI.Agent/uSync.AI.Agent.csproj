@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<RootNamespace>uSync.AI.Agent</RootNamespace>
+
+		<PackageId>uSync.AI.Agent</PackageId>
+		<Product>uSync.AI.Agent</Product>
+		<Title>uSync for Umbraco.AI - agents</Title>
+		<Description>uSync handlers and serializers for Umbraco.AI.Agent agents.</Description>
+		<PackageTags>umbraco usync ai agent umbraco-marketplace</PackageTags>
+
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="readme.md" Pack="true" PackagePath="\" />
+		<ProjectReference Include="../uSync.AI.Sync/uSync.AI.Sync.csproj" />
+		<PackageReference Include="Umbraco.AI.Agent.Core" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="uSync.AI.Tests" />
+	</ItemGroup>
+</Project>

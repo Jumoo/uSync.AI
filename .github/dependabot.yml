@@ -1,0 +1,49 @@
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Umbraco and uSync (including uSync.Complete's uSync.Publisher/uSync.Expansions.Core) are
+    # pinned deliberately. The versions referenced here set the minimum for anyone installing
+    # these packages, so they move when we choose to move them - not on a weekly schedule. Note
+    # this also opts them out of dependabot security updates.
+    ignore:
+      - dependency-name: "Umbraco.*"
+      - dependency-name: "uSync*"
+    # majors are deliberately left out of the group so they arrive as one PR each.
+    groups:
+      nuget-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "npm"
+    directory: "/uSync.AI.Sync/ai-client"
+    schedule:
+      interval: "weekly"
+    # TypeScript stays on v5 until hey-api supports 7 (see the Jumoo handbook).
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"

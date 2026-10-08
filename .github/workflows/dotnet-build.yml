@@ -1,0 +1,51 @@
+name: PR Project Build
+
+permissions:
+  contents: read
+
+# NOTE: Jumoo repos release from "{version}/main" - a branch per Umbraco major. Plain
+# "main" is kept in the filter so a re-created main, or a branch that hasn't been moved
+# over yet, still builds - a past repo had a workflow that silently never ran because its
+# filter didn't match the branch it was meant to watch.
+on:
+  pull_request:
+    branches: [ "main", "*/main" ]
+    paths-ignore:
+      - "**.md"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  config: Release
+  # the CI solution: every package project plus the test projects. The *.Site test site is
+  # deliberately not in it, so a broken starter kit can never fail a build or a release.
+  solution: ./uSync.AI-CI.slnx
+
+jobs:
+  build-project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: "**/*.csproj"
+
+      - name: restore
+        run: dotnet restore ${{ env.solution }}
+
+      - name: build
+        run: >
+          dotnet build ${{ env.solution }}
+          -c ${{ env.config }} --no-restore
+          -p:ContinuousIntegrationBuild=true
+
+      - name: test
+        run: >
+          dotnet test ${{ env.solution }}
+          -c ${{ env.config }} --no-build

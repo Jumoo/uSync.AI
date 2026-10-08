@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<RootNamespace>uSync.AI.Complete</RootNamespace>
+
+		<PackageId>uSync.AI.Complete</PackageId>
+		<Product>uSync.AI.Complete</Product>
+		<Title>uSync.Complete for Umbraco.AI</Title>
+		<Description>Push and pull Umbraco.AI settings, prompts and agents between servers with uSync.Complete, and Umbraco.AI agent tools that drive the uSync.Complete publisher.</Description>
+		<PackageTags>umbraco usync usync-complete ai agent umbraco-marketplace</PackageTags>
+
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="readme.md" Pack="true" PackagePath="\" />
+		<ProjectReference Include="../uSync.AI.Sync/uSync.AI.Sync.csproj" />
+		<ProjectReference Include="../uSync.AI.Tools/uSync.AI.Tools.csproj" />
+		<PackageReference Include="uSync.Expansions.Core" />
+		<PackageReference Include="uSync.Publisher" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="uSync.AI.Tests.Complete" />
+	</ItemGroup>
+</Project>

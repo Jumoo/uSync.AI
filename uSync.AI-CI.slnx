@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="uSync.AI.Sync/uSync.AI.Sync.csproj" />
+  <Project Path="uSync.AI.Prompt/uSync.AI.Prompt.csproj" />
+  <Project Path="uSync.AI.Agent/uSync.AI.Agent.csproj" />
+  <Project Path="uSync.AI.Tools/uSync.AI.Tools.csproj" />
+  <Project Path="uSync.AI/uSync.AI.csproj" />
+  <Project Path="uSync.AI.Complete/uSync.AI.Complete.csproj" />
+  <Project Path="uSync.Complete.AI/uSync.Complete.AI.csproj" />
+  <Project Path="uSync.AI.Tests/uSync.AI.Tests.csproj" />
+  <Project Path="uSync.AI.Tests.Complete/uSync.AI.Tests.Complete.csproj" />
+</Solution>

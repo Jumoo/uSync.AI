@@ -1,0 +1,87 @@
+# The real publish happens in release.yml, triggered by a version tag, via NuGet trusted
+# publishing. This workflow is otherwise build-verification only - manually triggered rather
+# than running on every push to main. Running it also publishes a prerelease build to
+# nightly.jumoo.uk, so a build is fetchable without waiting for a tagged release.
+
+name: Build and Package
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  config: Release
+  out_folder: ./build-out/
+  # the CI solution: every package project plus the test projects. The *.Site test site is
+  # deliberately not in it, so a broken starter kit can never fail a build or a release.
+  solution: ./uSync.AI-CI.slnx
+
+jobs:
+  package-up:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # full history - the prerelease version step below walks tag ancestry
+          # (git tag --merged) to find the last release on this branch.
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: "**/*.csproj"
+
+      # prerelease version = the next patch after the last release tag on this branch, plus
+      # a build number - the version isn't bumped between releases, so the tag is the only
+      # reliable source here.
+      - name: compute prerelease version
+        id: prerelease_version
+        run: |
+          latest_tag=$(git tag --merged HEAD --list 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+          if [ -z "$latest_tag" ]; then
+            echo "::error::No v{major}.{minor}.{patch} release tag found on this branch"
+            exit 1
+          fi
+          IFS='.' read -r major minor patch <<< "${latest_tag#v}"
+          base_version="${major}.${minor}.$((patch + 1))"
+          echo "Last release: $latest_tag -> next: $base_version"
+          echo "version=${base_version}-prerelease.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: restore
+        run: dotnet restore ${{ env.solution }}
+
+      - name: build
+        run: >
+          dotnet build ${{ env.solution }}
+          -c ${{ env.config }} --no-restore
+          -p:ContinuousIntegrationBuild=true
+
+      # deliberately not --no-build: the version has to be stamped onto the assembly as well
+      # as the nuspec, so this step rebuilds with it.
+      - name: package
+        run: >
+          dotnet pack ${{ env.solution }}
+          -c ${{ env.config }}
+          --output ${{ env.out_folder }}
+          /p:version=${{ steps.prerelease_version.outputs.version }}
+          -p:ContinuousIntegrationBuild=true
+
+      # publish to nightly.jumoo.uk on every run, so a build is fetchable immediately
+      # rather than waiting for a tagged release - this workflow is manually triggered,
+      # so there's no separate "rehearsal" run to exclude here.
+      - name: Publish to nightly feed
+        uses: Jumoo/nightly-feed-config@main
+        with:
+          packages: ${{ env.out_folder }}
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}

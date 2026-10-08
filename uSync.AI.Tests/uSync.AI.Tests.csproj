@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="NUnit" />
+		<PackageReference Include="NUnit3TestAdapter" />
+		<PackageReference Include="Moq" />
+		<PackageReference Include="coverlet.collector" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="../uSync.AI.Sync/uSync.AI.Sync.csproj" />
+		<ProjectReference Include="../uSync.AI.Prompt/uSync.AI.Prompt.csproj" />
+		<ProjectReference Include="../uSync.AI.Agent/uSync.AI.Agent.csproj" />
+		<ProjectReference Include="../uSync.AI.Tools/uSync.AI.Tools.csproj" />
+	</ItemGroup>
+
+</Project>

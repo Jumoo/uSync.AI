@@ -1,0 +1,44 @@
+<Project>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+
+	<!-- umbraco libraries for packages. 17.5.0 is the floor Umbraco.AI 17.5.x itself sets. -->
+	<ItemGroup>
+		<PackageVersion Include="Umbraco.Cms.Core" Version="17.5.0" />
+		<PackageVersion Include="Umbraco.Cms.Web.Website" Version="17.5.0" />
+		<PackageVersion Include="Umbraco.Cms.Api.Management" Version="17.5.0" />
+	</ItemGroup>
+
+	<!-- uSync -->
+	<ItemGroup>
+		<PackageVersion Include="uSync.BackOffice" Version="17.4.3" />
+	</ItemGroup>
+
+	<!-- uSync.Complete (for uSync.AI.Complete) -->
+	<ItemGroup>
+		<PackageVersion Include="uSync.Expansions.Core" Version="17.5.0" />
+		<PackageVersion Include="uSync.Publisher" Version="17.5.0" />
+	</ItemGroup>
+
+	<!-- Umbraco.AI -->
+	<ItemGroup>
+		<PackageVersion Include="Umbraco.AI.Core" Version="17.5.2" />
+		<PackageVersion Include="Umbraco.AI.Prompt.Core" Version="17.3.0" />
+		<PackageVersion Include="Umbraco.AI.Agent.Core" Version="17.3.0" />
+	</ItemGroup>
+
+	<!-- source link -->
+	<ItemGroup>
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.201" />
+	</ItemGroup>
+
+	<!-- testing -->
+	<ItemGroup>
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
+		<PackageVersion Include="NUnit3TestAdapter" Version="6.2.0" />
+		<PackageVersion Include="NUnit" Version="4.3.2" />
+		<PackageVersion Include="Moq" Version="4.20.72" />
+		<PackageVersion Include="coverlet.collector" Version="8.0.1" />
+	</ItemGroup>
+</Project>

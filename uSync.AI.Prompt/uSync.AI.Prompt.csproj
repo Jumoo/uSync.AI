@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<RootNamespace>uSync.AI.Prompt</RootNamespace>
+
+		<PackageId>uSync.AI.Prompt</PackageId>
+		<Product>uSync.AI.Prompt</Product>
+		<Title>uSync for Umbraco.AI - prompts</Title>
+		<Description>uSync handlers and serializers for Umbraco.AI.Prompt prompts.</Description>
+		<PackageTags>umbraco usync ai prompt umbraco-marketplace</PackageTags>
+
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="readme.md" Pack="true" PackagePath="\" />
+		<ProjectReference Include="../uSync.AI.Sync/uSync.AI.Sync.csproj" />
+		<PackageReference Include="Umbraco.AI.Prompt.Core" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="uSync.AI.Tests" />
+	</ItemGroup>
+</Project>
