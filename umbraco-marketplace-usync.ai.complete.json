@@ -1,0 +1,44 @@
+{
+    "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+    "AuthorDetails": {
+        "Name": "Jumoo",
+        "Description": "Jumoo are a software development company based in the UK",
+        "Url": "https://jumoo.co.uk",
+        "ImageUrl": "https://jumoo.co.uk/img/ju_square.jpg"
+    },
+    "Category": "Artificial Intelligence",
+    "PackageType": "Package",
+    "LicenseTypes": [
+        "Free"
+    ],
+    "Tags": [
+        "ai",
+        "sync",
+        "deployment",
+        "usync",
+        "usync-complete"
+    ],
+    "PackagesByAuthor": [
+        "uSync",
+        "uSync.Complete",
+        "uSync.Automate",
+        "uSync.Forms",
+        "Jumoo.TranslationManager",
+        "Jumoo.TranslationManager.AI"
+    ],
+    "RelatedPackages": [
+        {
+            "PackageId": "uSync.Complete.AI",
+            "Description": "Everything in one package: uSync.AI plus this.",
+            "GroupTitle": "uSync.AI family"
+        },
+        {
+            "PackageId": "uSync.AI",
+            "Description": "AI settings, prompt and agent sync, plus the uSync agent tools."
+        }
+    ],
+    "Title": "uSync.AI.Complete",
+    "Description": "Push and pull Umbraco.AI connections, profiles, prompts and agents between servers with uSync.Complete, and Umbraco.AI agent tools that publish content, pull content and take restore points, each checked against the acting user's permissions. Needs uSync.Complete.",
+    "DocumentationUrl": "https://github.com/Jumoo/uSync.AI#readme",
+    "IssueTrackerUrl": "https://github.com/Jumoo/uSync.AI/issues"
+}
