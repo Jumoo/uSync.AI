@@ -136,6 +136,18 @@ public class PromptSerializerTests
     }
 
     [Test]
+    public async Task Prompt_CreatedByImport_GetsADateCreated()
+    {
+        var xml = (await _serializer.SerializeAsync(Prompt(), _options)).Item!;
+
+        var before = DateTime.UtcNow;
+        var result = await _serializer.DeserializeAsync(xml, _options);
+
+        Assert.That(result.Success, Is.True, result.Message);
+        Assert.That(result.Item!.DateCreated, Is.GreaterThanOrEqualTo(before));
+    }
+
+    [Test]
     public async Task Prompt_MissingReferences_AreLeftOffWithAWarningEach()
     {
         TargetHasEverything();

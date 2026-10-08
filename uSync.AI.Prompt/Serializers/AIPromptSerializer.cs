@@ -72,8 +72,10 @@ public class AIPromptSerializer : SyncSerializerRoot<AIPrompt>, ISyncSerializer<
         var instructions = node.Element("Instructions").ValueOrDefault(string.Empty);
         var description = info?.Element("Description").ValueOrDefault(string.Empty);
 
+        // unlike the core Umbraco.AI entities, AIPrompt has no DateCreated default and the
+        // prompt service doesn't set one (only the management API mapper does), so set it here.
         var item = await FindItemAsync(key) ?? await FindItemAsync(alias)
-            ?? new AIPrompt { Alias = alias, Name = name, Instructions = instructions }.WithId(key);
+            ?? new AIPrompt { Alias = alias, Name = name, Instructions = instructions, DateCreated = DateTime.UtcNow }.WithId(key);
 
         var changes = new List<uSyncChange>();
 
