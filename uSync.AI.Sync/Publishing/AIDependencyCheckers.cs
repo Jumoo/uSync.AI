@@ -57,7 +57,7 @@ public class AIProfileDependencyChecker : ISyncDependencyChecker<AIProfile>
             SyncAIDependencies.Item(uSyncAI.EntityTypes.Profile, item.Id, item.Name, SyncAIDependencies.ProfileOrder, flags),
         };
 
-        if (SyncAIDependencies.WantsDependencies(flags))
+        if (_dependencies.WantsDependencies(flags))
             items.AddRange(await _dependencies.ForProfileAsync(item, flags));
 
         return SyncAIDependencies.Distinct(items);

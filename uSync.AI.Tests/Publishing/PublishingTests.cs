@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using Moq;
 using Umbraco.AI.Agent.Core.Agents;
 using Umbraco.AI.Core.Connections;
@@ -76,8 +77,11 @@ public class PublishingTests
 
         _aiService = new SyncAIService(_connections.Object, guardrails.Object, contexts.Object, _profiles.Object,
             Mock.Of<IAISettingsService>(), new AIProviderCollection(() => []));
-        _dependencies = new SyncAIDependencies(_aiService);
+        _dependencies = Dependencies(new uSyncAIOptions());
     }
+
+    private SyncAIDependencies Dependencies(uSyncAIOptions options)
+        => new(_aiService, Mock.Of<IOptionsMonitor<uSyncAIOptions>>(x => x.CurrentValue == options));
 
     private static AIProfile Profile() => new AIProfile
     {
@@ -178,11 +182,39 @@ public class PublishingTests
     }
 
     [Test]
-    public async Task Profile_WithoutTheDependenciesFlag_IsJustItself()
+    public async Task Profile_WithoutTheDependenciesFlag_StillBringsItsDependencies_ByDefault()
     {
+        // the publisher's "include dependencies" is off by default; an AI item without its
+        // dependencies arrives with its references to them dropped.
         var result = await new AIProfileDependencyChecker(_dependencies).GetDependenciesAsync(Profile(), DependencyFlags.None);
 
+        Assert.That(Types(result), Is.EqualTo(new[]
+        {
+            $"umbraco-ai-connection:{ConnectionId}",
+            $"umbraco-ai-guardrail:{GuardrailId}",
+            $"umbraco-ai-context:{ContextId}",
+            $"umbraco-ai-profile:{ProfileId}",
+        }));
+    }
+
+    [Test]
+    public async Task Profile_WithoutTheDependenciesFlag_IsJustItself_WhenAlwaysIncludeIsOff()
+    {
+        var dependencies = Dependencies(new uSyncAIOptions { Publishing = { AlwaysIncludeDependencies = false } });
+
+        var result = await new AIProfileDependencyChecker(dependencies).GetDependenciesAsync(Profile(), DependencyFlags.None);
+
         Assert.That(Types(result), Is.EqualTo(new[] { $"umbraco-ai-profile:{ProfileId}" }));
+    }
+
+    [Test]
+    public async Task Prompt_WithoutTheDependenciesFlag_BringsItsProfileChain_ByDefault()
+    {
+        var prompt = new AIPrompt { Alias = "summarise", Name = "Summarise", Instructions = "x", ProfileId = ProfileId }.WithId(ItemId);
+
+        var result = await new AIPromptDependencyChecker(_dependencies).GetDependenciesAsync(prompt, DependencyFlags.None);
+
+        Assert.That(Types(result), Does.Contain($"umbraco-ai-profile:{ProfileId}").And.Contain($"umbraco-ai-connection:{ConnectionId}"));
     }
 
     [Test]
