@@ -12,6 +12,12 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       external: [/^@umbraco/],
+      // No content hash in chunk names. A hashed name changes whenever a source file does,
+      // and the .NET static web assets cache then points at a file that no longer exists,
+      // failing the first build after every client edit.
+      output: {
+        chunkFileNames: "[name].js",
+      },
     },
   },
 });
