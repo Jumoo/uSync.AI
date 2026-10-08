@@ -18,6 +18,8 @@ concurrency:
 env:
   config: Release
   out_folder: ./build-out/
+  # the version prereleases build towards until the first release is tagged on this branch.
+  first_version: 17.0.0
   # the CI solution: every package project plus the test projects. The *.Site test site is
   # deliberately not in it, so a broken starter kit can never fail a build or a release.
   solution: ./uSync.AI-CI.slnx
@@ -48,18 +50,20 @@ jobs:
 
       # prerelease version = the next patch after the last release tag on this branch, plus
       # a build number - the version isn't bumped between releases, so the tag is the only
-      # reliable source here.
+      # reliable source here. Before the first release there is no tag, so first_version is
+      # used as is.
       - name: compute prerelease version
         id: prerelease_version
         run: |
           latest_tag=$(git tag --merged HEAD --list 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
           if [ -z "$latest_tag" ]; then
-            echo "::error::No v{major}.{minor}.{patch} release tag found on this branch"
-            exit 1
+            base_version="${{ env.first_version }}"
+            echo "No release tag on this branch yet -> first release: $base_version"
+          else
+            IFS='.' read -r major minor patch <<< "${latest_tag#v}"
+            base_version="${major}.${minor}.$((patch + 1))"
+            echo "Last release: $latest_tag -> next: $base_version"
           fi
-          IFS='.' read -r major minor patch <<< "${latest_tag#v}"
-          base_version="${major}.${minor}.$((patch + 1))"
-          echo "Last release: $latest_tag -> next: $base_version"
           echo "version=${base_version}-prerelease.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
 
       - name: restore
