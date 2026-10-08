@@ -43,15 +43,20 @@ change in Umbraco.AI or uSync itself than by a workaround here. Ranked roughly b
    `AIProfileSerializer.DeserializeSettings`, and will need updating by hand when a capability
    is added. Fix: make it public.
 
-5. **The management API accepts aliases the backoffice won't save.** The backoffice's alias
-   field requires `^[a-z0-9\-]+$`, but `POST /connections` (and profiles, prompts, agents)
-   accepted `openAiTest`. Seen on a 17.5.2 test site: once an item has such an alias, Save in
-   its workspace does nothing and shows no error - the locked alias input fails validation and
-   throws (`setValidity` called with an empty message) instead of showing its pattern message.
-   It matters to uSync because an import takes the alias from the file as is, so an item
-   created through the API on one site imports cleanly onto another and then can't be edited
-   there. Workaround: none in uSync.AI; rename the alias through the API. Fix: validate the
-   alias the same way on the server, and have the field show its message.
+5. **Items with an alias the backoffice's alias pattern rejects can't be saved in the
+   backoffice.** The alias field requires `^[a-z0-9\-]+$`, but the management API accepts other
+   aliases (`openAiTest`; Prompt and Agent explicitly allow `^[a-zA-Z0-9_-]+$`), and alias
+   lookups ignore case, so Umbraco.AI doesn't seem to treat case as meaningful. When such an item
+   is opened its alias field is locked, which makes the input readonly, and Save then does
+   nothing and shows no error.
+   The cause is in UUI, not Umbraco.AI: a readonly input isn't validated by the browser, but
+   UUI's form control still copies its `patternMismatch` and calls `setValidity` with an empty
+   message, which throws. Reported as
+   [umbraco/Umbraco.UI#1519](https://github.com/umbraco/Umbraco.UI/issues/1519).
+   It matters to uSync because an import takes the alias from the file as is, so an item created
+   through the API on one site imports cleanly onto another and then can't be edited there.
+   Workaround: none in uSync.AI; unlocking the alias and changing it to match the pattern lets
+   the item save.
 
 ## uSync.Complete
 
