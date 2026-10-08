@@ -107,10 +107,50 @@ public class AIConnectionSettingsFilterTests
     }
 
     [Test]
-    public void IgnoreSecretValuesOff_KeepsEverything()
+    public void IgnoreSecretValuesOff_WritesPlainTextSecrets()
+    {
+        var (settings, ignored) = AIConnectionSettingsFilter.Filter(
+            Settings("sk-live-plain-text"), typeof(FakeProviderSettings), new uSyncAIConnectionOptions { IgnoreSecretValues = false });
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(settings!["ApiKey"]!.GetValue<string>(), Is.EqualTo("sk-live-plain-text"));
+            Assert.That(ignored, Is.Empty);
+        });
+    }
+
+    [Test]
+    public void IgnoreSecretValuesOff_StillLeavesOutEncryptedValues()
     {
         var (settings, ignored) = AIConnectionSettingsFilter.Filter(
             Settings(), typeof(FakeProviderSettings), new uSyncAIConnectionOptions { IgnoreSecretValues = false });
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(settings!.ContainsKey("ApiKey"), Is.False);
+            Assert.That(ignored, Is.EqualTo(new[] { "ApiKey" }));
+        });
+    }
+
+    [Test]
+    public void IgnoreEncryptedOff_LeavesOutSensitiveEncryptedValuesWhileSecretsAreIgnored()
+    {
+        var (settings, ignored) = AIConnectionSettingsFilter.Filter(
+            Settings(), typeof(FakeProviderSettings), new uSyncAIConnectionOptions { IgnoreEncrypted = false });
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(settings!.ContainsKey("ApiKey"), Is.False);
+            Assert.That(ignored, Is.EqualTo(new[] { "ApiKey" }));
+        });
+    }
+
+    [Test]
+    public void BothOff_KeepsEverything()
+    {
+        var (settings, ignored) = AIConnectionSettingsFilter.Filter(
+            Settings(), typeof(FakeProviderSettings),
+            new uSyncAIConnectionOptions { IgnoreSecretValues = false, IgnoreEncrypted = false });
 
         Assert.Multiple(() =>
         {

@@ -114,12 +114,13 @@ public static class AIConnectionSettingsFilter
         // Layer 2: everything the provider marks sensitive, configuration references included.
         if (options.IgnoreSensitive && sensitive) return true;
 
+        // Layer 3: encrypted values, which only the server that encrypted them can read.
+        if (options.IgnoreEncrypted && text?.StartsWith(EncryptedPrefix, StringComparison.Ordinal) == true) return true;
+
         if (options.IgnoreSecretValues is false) return false;
 
-        // Layer 3: secret values. An empty sensitive field holds nothing to protect, and a
+        // Layer 4: secret values. An empty sensitive field holds nothing to protect, and a
         // "$Config:Key" reference is where the secret lives, not the secret - both are written.
-        if (text?.StartsWith(EncryptedPrefix, StringComparison.Ordinal) == true) return true;
-
         return sensitive
             && value is not null
             && text is not ""
