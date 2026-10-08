@@ -10,7 +10,7 @@ public class AIConnectionItemManager(SyncAIService aiService) : SyncAIItemManage
 {
     protected override string UdiEntityType => uSyncAI.EntityTypes.Connection;
     protected override string ClientEntityType => uSyncAI.ClientEntityTypes.Connection;
-    protected override string Icon => "icon-plug";
+    protected override string Icon => "icon-wall-plug";
     protected override Task<AIConnection?> GetAsync(Guid key) => aiService.GetConnectionAsync(key);
     protected override Task<IEnumerable<AIConnection>> GetAllAsync() => aiService.GetConnectionsAsync();
     protected override Guid GetKey(AIConnection item) => item.Id;

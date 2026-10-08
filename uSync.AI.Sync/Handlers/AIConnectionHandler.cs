@@ -22,7 +22,7 @@ namespace uSync.AI.Sync.Handlers;
     "AI Connections",
     "AI-Connections",
     uSyncAIPriorities.Connections,
-    Icon = "icon-plug",
+    Icon = "icon-wall-plug",
     EntityType = uSyncAI.EntityTypes.Connection)]
 public class AIConnectionHandler : SyncAIHandlerBase<AIConnection>, ISyncHandler,
     INotificationAsyncHandler<AIConnectionSavedNotification>,
