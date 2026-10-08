@@ -14,14 +14,15 @@ environments as files, push and pull them with uSync.Complete, and let AI agents
 | `uSync.AI.Agent` | Handler and serializer for agents | Umbraco.AI.Agent |
 | `uSync.AI.Tools` | Agent tools: uSync report, export and import, checked against the user's uSync access | uSync, Umbraco.AI |
 | `uSync.Complete.AI` | Meta package: `uSync.AI` plus `uSync.AI.Complete` | uSync.Complete |
-| `uSync.AI.Complete` | Push/pull menus for AI items and agent tools for the publisher | uSync.Complete |
+| `uSync.AI.Complete` | Push and pull AI items between servers (agent tools for the publisher to follow) | uSync.Complete |
 
 If you only use part of Umbraco.AI, install the individual packages instead of a meta package.
 
 ## Status
 
-In development. Nothing is published yet. Settings, prompt and agent sync and the uSync agent
-tools are in place; `uSync.AI.Complete` is not written yet.
+In development. Nothing is published yet. Settings, prompt and agent sync, the uSync agent
+tools and uSync.Complete push and pull are in place. The agent tools for the uSync.Complete
+publisher are not written yet.
 
 ## Building
 

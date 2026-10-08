@@ -12,6 +12,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Infrastructure.Manifest;
 using uSync.AI.Sync.Handlers;
 using uSync.AI.Sync.Notifications;
+using uSync.AI.Sync.Publishing;
 using uSync.AI.Sync.Services;
 using uSync.BackOffice;
 using uSync.Core.Extensions;
@@ -75,6 +76,7 @@ public static class BuilderuSyncAIExtensions
     {
         builder.Services.TryAddSingleton<SyncAIService>();
         builder.Services.TryAddSingleton<SyncAIPendingDeletes>();
+        builder.Services.TryAddSingleton<SyncAIDependencies>();
         builder.Services.AddOptions<uSyncAIOptions>().Bind(builder.Config.GetSection(uSyncAIOptions.Section));
 
         // uSyncConstants.Groups.Icons is a public mutable dictionary with no "AI" entry; TryAdd so

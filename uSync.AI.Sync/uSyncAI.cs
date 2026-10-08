@@ -41,6 +41,20 @@ public class uSyncAI : ISyncAddOn
         public const string Prompt = "umbraco-ai-prompt";
         public const string Agent = "umbraco-ai-agent";
     }
+
+    /// <summary>
+    /// The entity types Umbraco.AI's own backoffice uses for its trees and workspaces. They are
+    /// what an entity action is told it was run on, and are not valid UDI entity types.
+    /// </summary>
+    public static class ClientEntityTypes
+    {
+        public const string Connection = "uai:connection";
+        public const string Guardrail = "uai:guardrail";
+        public const string Context = "uai:context";
+        public const string Profile = "uai:profile";
+        public const string Prompt = "uai:prompt";
+        public const string Agent = "uai:agent";
+    }
 }
 
 /// <summary>
