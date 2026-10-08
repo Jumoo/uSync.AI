@@ -30,6 +30,13 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # the client bundle is built by the csproj (npm ci + npm run build) during dotnet build
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: "**/package-lock.json"
+
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json

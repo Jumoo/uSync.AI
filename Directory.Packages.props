@@ -24,8 +24,9 @@
 	<!-- Umbraco.AI -->
 	<ItemGroup>
 		<PackageVersion Include="Umbraco.AI.Core" Version="17.5.2" />
-		<PackageVersion Include="Umbraco.AI.Prompt.Core" Version="17.3.0" />
-		<PackageVersion Include="Umbraco.AI.Agent.Core" Version="17.3.0" />
+		<PackageVersion Include="Umbraco.AI.Startup" Version="17.5.2" />
+		<PackageVersion Include="Umbraco.AI.Prompt.Startup" Version="17.3.0" />
+		<PackageVersion Include="Umbraco.AI.Agent.Startup" Version="17.3.0" />
 	</ItemGroup>
 
 	<!-- source link -->
