@@ -1,0 +1,51 @@
+{
+    "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+    "AuthorDetails": {
+        "Name": "Jumoo",
+        "Description": "Jumoo are a software development company based in the UK",
+        "Url": "https://jumoo.co.uk",
+        "ImageUrl": "https://jumoo.co.uk/img/ju_square.jpg"
+    },
+    "Category": "Artificial Intelligence",
+    "PackageType": "Package",
+    "LicenseTypes": [
+        "Free"
+    ],
+    "Tags": [
+        "ai",
+        "sync",
+        "deployment",
+        "usync"
+    ],
+    "PackagesByAuthor": [
+        "uSync",
+        "uSync.Complete",
+        "uSync.Automate",
+        "uSync.Forms",
+        "Jumoo.TranslationManager",
+        "Jumoo.TranslationManager.AI"
+    ],
+    "RelatedPackages": [
+        {
+            "PackageId": "uSync.AI.Sync",
+            "Description": "Sync Umbraco.AI connections, guardrails, contexts, profiles and settings.",
+            "GroupTitle": "uSync.AI family"
+        },
+        {
+            "PackageId": "uSync.AI.Prompt",
+            "Description": "Sync Umbraco.AI prompts."
+        },
+        {
+            "PackageId": "uSync.AI.Agent",
+            "Description": "Sync Umbraco.AI agents."
+        },
+        {
+            "PackageId": "uSync.AI.Tools",
+            "Description": "Agent tools that run uSync reports, exports and imports."
+        }
+    ],
+    "Title": "uSync.AI",
+    "Description": "uSync for Umbraco.AI. Sync AI connections, guardrails, contexts, profiles, settings, prompts and agents between environments as files, and give AI agents tools to run uSync reports, exports and imports.",
+    "DocumentationUrl": "https://github.com/Jumoo/uSync.AI#readme",
+    "IssueTrackerUrl": "https://github.com/Jumoo/uSync.AI/issues"
+}
