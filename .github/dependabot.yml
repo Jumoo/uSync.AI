@@ -26,8 +26,11 @@ updates:
       - "/uSync.AI.Complete/complete-client"
     schedule:
       interval: "weekly"
+    # The Umbraco backoffice package sets which Umbraco major the clients build against, so it
+    # moves when we choose - the same rule as the Umbraco.* NuGet packages above.
     # TypeScript stays on v5 until hey-api supports 7 (see the Jumoo handbook).
     ignore:
+      - dependency-name: "@umbraco-cms/*"
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
     groups:
