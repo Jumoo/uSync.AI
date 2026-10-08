@@ -14,6 +14,10 @@ change in Umbraco.AI or uSync itself than by a workaround here. Ranked roughly b
    reference contexts, guardrails and profiles by Guid.
    Workaround: `AIEntityKeys` in `uSync.AI.Sync` sets the Id through an `[UnsafeAccessor]`.
    Fix: a public `init` setter, or a `Create*Async(entity, Guid id)` overload. Non-breaking.
+   Raised as [umbraco/Umbraco.AI#544](https://github.com/umbraco/Umbraco.AI/issues/544), with a
+   public `init` fix (also covering `AIContextResource` and `AIGuardrailRule`) in
+   [umbraco/Umbraco.AI#545](https://github.com/umbraco/Umbraco.AI/pull/545) against `v18/dev`.
+   The workaround stays until a fix ships on the v17 line too.
 
 2. **Connection settings reach notification handlers decrypted, so "ignore encrypted" filters
    never match.** `AIConnectionSavedNotification.Entity.Settings` (and what
