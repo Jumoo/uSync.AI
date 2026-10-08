@@ -21,7 +21,9 @@ updates:
           - "patch"
 
   - package-ecosystem: "npm"
-    directory: "/uSync.AI.Sync/ai-client"
+    directories:
+      - "/uSync.AI.Sync/ai-client"
+      - "/uSync.AI.Complete/complete-client"
     schedule:
       interval: "weekly"
     # TypeScript stays on v5 until hey-api supports 7 (see the Jumoo handbook).

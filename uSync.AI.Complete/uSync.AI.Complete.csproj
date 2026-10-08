@@ -1,7 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
+		<StaticWebAssetBasePath>/</StaticWebAssetBasePath>
 		<RootNamespace>uSync.AI.Complete</RootNamespace>
+
+		<ContentTargetFolders>content</ContentTargetFolders>
 
 		<PackageId>uSync.AI.Complete</PackageId>
 		<Product>uSync.AI.Complete</Product>
@@ -14,8 +18,13 @@
 
 	<ItemGroup>
 		<None Include="readme.md" Pack="true" PackagePath="\" />
+
+		<PackageReference Include="Umbraco.Cms.Web.Website" />
+		<PackageReference Include="Umbraco.Cms.Api.Management" />
+
 		<ProjectReference Include="../uSync.AI.Sync/uSync.AI.Sync.csproj" />
 		<ProjectReference Include="../uSync.AI.Tools/uSync.AI.Tools.csproj" />
+
 		<PackageReference Include="uSync.Expansions.Core" />
 		<PackageReference Include="uSync.Publisher" />
 	</ItemGroup>
@@ -23,4 +32,28 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="uSync.AI.Tests.Complete" />
 	</ItemGroup>
+
+	<!-- Client build, as uSync.Automate: a clean clone always produces a bundle at build time -->
+	<!-- instead of relying on a committed wwwroot. -->
+	<ItemGroup>
+		<ClientAssetsInputs Include="complete-client\**" Exclude="$(DefaultItemExcludes)" />
+		<Content Remove="complete-client\**" />
+	</ItemGroup>
+
+	<Target Name="RestoreClient" Inputs="complete-client\package.json;complete-client\package-lock.json"
+			Outputs="complete-client\node_modules\.package-lock.json">
+		<Message Importance="high" Text="Restoring uSync.AI.Complete client NPM packages..." />
+		<Exec Command="npm ci" WorkingDirectory="complete-client" />
+	</Target>
+
+	<Target Name="BuildClient" BeforeTargets="AssignTargetPaths" DependsOnTargets="RestoreClient"
+			Inputs="@(ClientAssetsInputs)" Outputs="$(IntermediateOutputPath)client.complete.txt">
+		<Message Importance="high" Text="Executing uSync.AI.Complete client NPM build script..." />
+		<Exec Command="npm run build" WorkingDirectory="complete-client" />
+		<ItemGroup>
+			<_ClientAssetsBuildOutput Include="wwwroot\App_Plugins\**" />
+		</ItemGroup>
+		<WriteLinesToFile File="$(IntermediateOutputPath)client.complete.txt" Lines="@(_ClientAssetsBuildOutput)" Overwrite="true" />
+	</Target>
+
 </Project>

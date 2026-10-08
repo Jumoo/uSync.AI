@@ -35,3 +35,29 @@ change in Umbraco.AI or uSync itself than by a workaround here. Ranked roughly b
 4. **`AIProfileSettingsSerializer` is internal.** Its capability switch is duplicated in
    `AIProfileSerializer.DeserializeSettings`, and will need updating by hand when a capability
    is added. Fix: make it public.
+
+## uSync.Complete
+
+1. **The publisher assumes a backoffice entity type is a valid UDI entity type.** Umbraco.AI's
+   are not: `uai:agent` has a colon, and `umb://uai:agent/{id}` does not parse. Three places
+   build or check a UDI from the entity type the backoffice hands them:
+   - the `usync.publisher.push.condition` on the `publisher-push` / `publisher-pull` kinds
+     builds `umb://{entityType}/{unique}`;
+   - `PublisherServerController.GetAvailableServers` returns no servers when that UDI doesn't
+     parse;
+   - the client's `servers.source.ts` caches the answer by entity type, not by UDI, so one
+     failed lookup leaves the push dialog with an empty server list.
+   `SyncItemManagerCollection.GetSyncEntityAsync` has the same problem for tree roots: with no
+   id it calls `Udi.Create(entityType)`.
+   Workaround: `uSync.AI.Complete` ships its own push and pull entity actions
+   (`complete-client/src/actions/ai-publish.action.ts`). They ask the item manager for the item
+   first and open the publisher's dialog with the entity type from the UDI that comes back.
+   Roots are not supported.
+   Fix: let an item manager declare the backoffice entity types it maps, and have
+   `uSyncEntityTypeHelper.ConvertClientEntityType` consult the item managers before the UDI is
+   built. `uSync.AI.Complete` could then use the stock kinds and drop its own actions.
+
+2. **The publisher's client can't be imported.** `@jumoo/usync-publisher-assets` gives types,
+   but the process modal token and `PublisherStrategyContext` aren't reachable at run time, so
+   the workaround above rebuilds the modal token from its alias string. An exported token
+   would stop that drifting.
