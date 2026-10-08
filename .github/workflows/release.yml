@@ -43,12 +43,10 @@ jobs:
     # environment of exactly this name. Don't remove or rename it without updating
     # the policy to match.
     #
-    # It is NOT an approval gate here. Environment protection rules (required
-    # reviewers, wait timers) are not available on private repositories at this plan
-    # level, so nothing pauses this job - pushing the tag publishes. The deliberate
-    # step is creating and publishing the GitHub release, which is what creates the
-    # tag. Publishing to NuGet cannot be undone; a version can be delisted but never
-    # replaced or reused.
+    # It is also the approval gate: the environment has a required reviewer (set in
+    # Settings > Environments, not here), so the job waits for an approval after the
+    # tag is pushed before anything is built or published. Publishing to NuGet cannot
+    # be undone; a version can be delisted but never replaced or reused.
     environment: nuget
 
     steps:
