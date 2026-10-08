@@ -64,7 +64,12 @@ public class AIAgentSerializer : SyncSerializerRoot<AIAgent>, ISyncSerializer<AI
 
         if (SyncAIJson.ToElement("Scope", item.Scope) is { } scope) node.Add(scope);
 
-        switch (item.Config)
+        // A standard agent saved without a config (as the management API allows) is handed to the
+        // saved notification with Config null, but reads back with an empty one. Write the empty
+        // one either way, or the file never matches the site and reports a change on every sync.
+        var itemConfig = item.Config ?? (item.AgentType == AIAgentType.Standard ? new AIStandardAgentConfig() : null);
+
+        switch (itemConfig)
         {
             case AIStandardAgentConfig standard:
                 node.Add(await SerializeStandardAsync(standard));
