@@ -248,4 +248,23 @@ public class AgentSerializerTests
 
         Assert.That(second, Is.EqualTo(first));
     }
+
+    [Test]
+    public async Task StandardAgent_WithoutConfig_SerializesTheSameAsAnEmptyConfig()
+    {
+        // saved through the management API with no config, then read back with an empty one
+        var saved = StandardAgent();
+        saved.Config = null;
+        var readBack = StandardAgent();
+        readBack.Config = new AIStandardAgentConfig();
+
+        var first = (await _serializer.SerializeAsync(saved, _options)).Item!.ToString();
+        var second = (await _serializer.SerializeAsync(readBack, _options)).Item!.ToString();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(first, Is.EqualTo(second));
+            Assert.That(XElement.Parse(first).Element("Config"), Is.Not.Null);
+        });
+    }
 }
