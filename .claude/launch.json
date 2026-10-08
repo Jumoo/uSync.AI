@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "usync-ai-site",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": [
+        "run", "--project", "uSync.AI.Site", "--no-launch-profile", "--",
+        "--urls", "http://localhost:14296",
+        "--environment", "Development",
+        "--Umbraco:CMS:Global:UseHttps=false",
+        "--Umbraco:CMS:Unattended:UnattendedUserName=test user",
+        "--Umbraco:CMS:Unattended:UnattendedUserEmail=test@jumoo.co.uk",
+        "--Umbraco:CMS:Unattended:UnattendedUserPassword=unattended123!"
+      ],
+      "port": 14296
+    }
+  ]
+}
