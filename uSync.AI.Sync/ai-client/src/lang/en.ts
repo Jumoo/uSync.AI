@@ -20,6 +20,18 @@ export default {
   usyncpublish: {
     ...items,
   },
+  // Handler names in the uSync dashboard's progress box. uSync camel-cases the handler's display
+  // name ("AI Connections" -> "aIConnections") and looks it up as `treeHeaders_{name}`, showing
+  // the camel-cased name itself when there's no match.
+  treeHeaders: {
+    aIConnections: items.AIConnection,
+    aIGuardrails: items.AIGuardrail,
+    aIContexts: items.AIContext,
+    aIProfiles: items.AIProfile,
+    aISettings: items.AISettings,
+    aIPrompts: items.AIPrompt,
+    aIAgents: items.AIAgent,
+  },
   // Labels for the tool scopes in uSync.AI.Tools, shown where an agent's tools are picked.
   // Umbraco.AI looks them up as `uaiToolScope_{camelCase(scopeId)}Label` and falls back to the
   // scope id. They live in this bundle so that package doesn't need a client of its own.
