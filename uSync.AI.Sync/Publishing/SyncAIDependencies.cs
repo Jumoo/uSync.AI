@@ -14,8 +14,13 @@ namespace uSync.AI.Sync.Publishing;
 /// <remarks>
 /// Orders sit above uSync's own (which top out at 1200) and match the handler priorities, so
 /// what an item needs arrives before it: connections, guardrails and contexts, then profiles,
-/// then prompts and agents. A profile's own dependencies are always listed alongside it rather
-/// than left for the caller to discover, so a prompt or agent brings its whole chain.
+/// then prompts and agents.
+/// <para>
+/// Each checker lists only an item's direct dependencies - a prompt names its profile, not the
+/// profile's connection. uSync.Complete asks each dependency for its own in turn, so a prompt
+/// still brings its whole chain, and because it caches each item's list separately, saving a
+/// profile only has to clear the profile's entry for a later push of the prompt to be right.
+/// </para>
 /// </remarks>
 public sealed class SyncAIDependencies
 {
@@ -85,19 +90,11 @@ public sealed class SyncAIDependencies
         return items;
     }
 
-    /// <summary>A profile, and everything the profile itself needs.</summary>
+    /// <summary>A profile - its own dependencies come from its checker, see the remarks above.</summary>
     public async Task<IEnumerable<uSyncDependency>> ProfileAsync(Guid? key, DependencyFlags flags)
-    {
-        if (key is not Guid profileKey || await _aiService.GetProfileAsync(profileKey) is not { } profile) return [];
-
-        var items = new List<uSyncDependency>
-        {
-            Item(uSyncAI.EntityTypes.Profile, profile.Id, profile.Name, ProfileOrder, flags),
-        };
-
-        items.AddRange(await ForProfileAsync(profile, flags));
-        return items;
-    }
+        => key is Guid profileKey && await _aiService.GetProfileAsync(profileKey) is { } profile
+            ? [Item(uSyncAI.EntityTypes.Profile, profile.Id, profile.Name, ProfileOrder, flags)]
+            : [];
 
     /// <summary>What a profile needs: its connection, and a chat profile's contexts and guardrails.</summary>
     public async Task<IEnumerable<uSyncDependency>> ForProfileAsync(AIProfile profile, DependencyFlags flags)

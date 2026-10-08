@@ -7,6 +7,7 @@ using Umbraco.Cms.Core.Manifest;
 using Umbraco.Cms.Infrastructure.Manifest;
 using uSync.AI.Complete.Security;
 using uSync.AI.Complete.Services;
+using uSync.AI.Sync.Notifications;
 using uSync.AI.Tools;
 using uSync.Core.Extensions;
 using uSync.Publisher;
@@ -29,6 +30,9 @@ public static class BuilderuSyncAICompleteExtensions
 {
     public static IUmbracoBuilder AdduSyncAIComplete(this IUmbracoBuilder builder)
     {
+        // a server that only receives pushes still has to forget what it cached about an item
+        builder.AddNotificationHandler<SyncAIItemChangedNotification, uSyncAICompleteCacheHandler>();
+
         if (builder.IsUmbracoBackOfficeEnabled() is false) return builder;
 
         builder.Services.AddSingleton<IPackageManifestReader, uSyncAICompleteManifestReader>();

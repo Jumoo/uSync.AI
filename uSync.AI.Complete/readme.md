@@ -67,3 +67,6 @@ for pull.
   or a uSync.Complete sync of the AI group, to move everything at once.
 - An agent's per-user-group tool permissions follow the user group's alias, so they apply to
   the matching group on the other server.
+- uSync.Complete caches what each item depends on. Saving or deleting an AI item clears its
+  entry, on the server that sends and on the one that receives, so a push always uses the
+  item's current links.
