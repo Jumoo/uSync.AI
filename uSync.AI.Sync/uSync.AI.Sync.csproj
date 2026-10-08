@@ -1,7 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
+		<StaticWebAssetBasePath>/</StaticWebAssetBasePath>
 		<RootNamespace>uSync.AI.Sync</RootNamespace>
+
+		<ContentTargetFolders>content</ContentTargetFolders>
 
 		<PackageId>uSync.AI.Sync</PackageId>
 		<Product>uSync.AI.Sync</Product>
@@ -14,11 +18,44 @@
 
 	<ItemGroup>
 		<None Include="readme.md" Pack="true" PackagePath="\" />
+
+		<PackageReference Include="Umbraco.Cms.Web.Website" />
+		<PackageReference Include="Umbraco.Cms.Api.Management" />
+
+		<!-- Startup, not just Core: it is what registers the IAI*Service implementations the
+		     handlers depend on, so this package cannot be installed without a working Umbraco.AI. -->
+		<PackageReference Include="Umbraco.AI.Startup" />
+
 		<PackageReference Include="uSync.BackOffice" />
-		<PackageReference Include="Umbraco.AI.Core" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="uSync.AI.Tests" />
+		<InternalsVisibleTo Include="uSync.AI.Prompt" />
+		<InternalsVisibleTo Include="uSync.AI.Agent" />
 	</ItemGroup>
+
+	<!-- Client build, as uSync.Automate: a clean clone always produces a bundle at build time -->
+	<!-- instead of relying on a committed wwwroot. -->
+	<ItemGroup>
+		<ClientAssetsInputs Include="ai-client\**" Exclude="$(DefaultItemExcludes)" />
+		<Content Remove="ai-client\**" />
+	</ItemGroup>
+
+	<Target Name="RestoreClient" Inputs="ai-client\package.json;ai-client\package-lock.json"
+			Outputs="ai-client\node_modules\.package-lock.json">
+		<Message Importance="high" Text="Restoring uSync.AI.Sync client NPM packages..." />
+		<Exec Command="npm ci" WorkingDirectory="ai-client" />
+	</Target>
+
+	<Target Name="BuildClient" BeforeTargets="AssignTargetPaths" DependsOnTargets="RestoreClient"
+			Inputs="@(ClientAssetsInputs)" Outputs="$(IntermediateOutputPath)client.complete.txt">
+		<Message Importance="high" Text="Executing uSync.AI.Sync client NPM build script..." />
+		<Exec Command="npm run build" WorkingDirectory="ai-client" />
+		<ItemGroup>
+			<_ClientAssetsBuildOutput Include="wwwroot\App_Plugins\**" />
+		</ItemGroup>
+		<WriteLinesToFile File="$(IntermediateOutputPath)client.complete.txt" Lines="@(_ClientAssetsBuildOutput)" Overwrite="true" />
+	</Target>
+
 </Project>

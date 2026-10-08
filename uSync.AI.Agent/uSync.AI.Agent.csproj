@@ -15,7 +15,7 @@
 	<ItemGroup>
 		<None Include="readme.md" Pack="true" PackagePath="\" />
 		<ProjectReference Include="../uSync.AI.Sync/uSync.AI.Sync.csproj" />
-		<PackageReference Include="Umbraco.AI.Agent.Core" />
+		<PackageReference Include="Umbraco.AI.Agent.Startup" />
 	</ItemGroup>
 
 	<ItemGroup>
