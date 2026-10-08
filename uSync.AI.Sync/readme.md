@@ -22,7 +22,7 @@ recorded by alias, so a file still imports onto a server where the item was crea
 
 ## Connection secrets
 
-A connection's API key is not written to disk. Any setting the provider marks as sensitive is
+By default a connection's API key is not written to disk. Any setting the provider marks as sensitive is
 left out of the file, and its name is listed under `<Ignored>`:
 
 ```xml
@@ -51,6 +51,7 @@ names where the secret lives, so it is written as is:
   "uSync": {
     "AI": {
       "Connections": {
+        "IgnoreEncrypted": true,
         "IgnoreSecretValues": true,
         "IgnoreSensitive": false,
         "IgnoreSettings": []
@@ -60,8 +61,12 @@ names where the secret lives, so it is written as is:
 }
 ```
 
+- `IgnoreEncrypted` (default `true`): leave out values that are already encrypted (`ENC:...`).
+  Only the server that encrypted them can read them.
 - `IgnoreSecretValues` (default `true`): leave out the value of sensitive settings, unless it
-  is a `$` configuration reference. Turning this off writes API keys to disk in plain text.
+  is a `$` configuration reference. Turn this off to sync API keys: they are written to disk in
+  plain text, so only do it where the uSync files are kept somewhere private. Encrypted values
+  are still left out unless `IgnoreEncrypted` is off too.
 - `IgnoreSensitive` (default `false`): leave out sensitive settings entirely, `$` references
   included.
 - `IgnoreSettings`: names of settings that are always left out.

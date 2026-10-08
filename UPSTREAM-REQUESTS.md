@@ -21,11 +21,14 @@ change in Umbraco.AI or uSync itself than by a workaround here. Ranked roughly b
    `ENC:` prefix only exists in storage. Seen on a 17.5.2 test site: saving an OpenAI connection
    through the management API handed our handler `apiKey` as typed.
    `uSync.AI.Sync` therefore decides what is secret from `[AIField(IsSensitive = true)]` on the
-   provider's settings type, not from the value.
-   Worth raising: `Umbraco.AI.Deploy`'s `FilterSensitiveSettings` builds its artifact from the
-   same entity and its default (`IgnoreEncrypted = true`, `IgnoreSensitive = false`) only tests
-   for the `ENC:` prefix. We have not run Deploy to confirm, but on reading the code its default
-   would write API keys into `.uda` files.
+   provider's settings type, not from the value, and leaves secrets out by default
+   (`IgnoreSecretValues`, which can be turned off to sync them).
+   Worth asking about: `Umbraco.AI.Deploy`'s `FilterSensitiveSettings` works from the same
+   entity, and its `IgnoreEncrypted` option only tests for the `ENC:` prefix, so as far as we
+   can tell from the code it doesn't filter anything in practice and API keys travel in `.uda`
+   files. That may well be intended - Deploy moves secrets between environments the site owner
+   controls - but if so the option name suggests otherwise, and the two packages should agree
+   on what the default is.
 
 3. **`AIEntityDeletedNotification<T>` carries only `EntityId`.** uSync needs the entity (its
    alias names the file) to write a delete marker. Workaround: handlers also listen to the
