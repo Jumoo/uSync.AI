@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using Umbraco.AI.Core.Profiles;
 using Umbraco.Cms.Core;
 using uSync.AI.Sync.Services;
@@ -26,10 +27,12 @@ public sealed class SyncAIDependencies
     public const int AgentOrder = 2150;
 
     private readonly SyncAIService _aiService;
+    private readonly IOptionsMonitor<uSyncAIOptions> _options;
 
-    public SyncAIDependencies(SyncAIService aiService)
+    public SyncAIDependencies(SyncAIService aiService, IOptionsMonitor<uSyncAIOptions> options)
     {
         _aiService = aiService;
+        _options = options;
     }
 
     /// <summary>A dependency entry for one item.</summary>
@@ -44,8 +47,14 @@ public sealed class SyncAIDependencies
             Flags = flags,
         };
 
-    /// <summary>Whether the caller asked for the things an item depends on, not just the item.</summary>
-    public static bool WantsDependencies(DependencyFlags flags) => flags.HasFlag(DependencyFlags.IncludeDependencies);
+    /// <summary>
+    /// Whether to list the things an item depends on, not just the item: always, unless
+    /// <see cref="uSyncAIPublishingOptions.AlwaysIncludeDependencies"/> is off, in which case only
+    /// when the caller asked for them.
+    /// </summary>
+    public bool WantsDependencies(DependencyFlags flags)
+        => _options.CurrentValue.Publishing.AlwaysIncludeDependencies
+            || flags.HasFlag(DependencyFlags.IncludeDependencies);
 
     public async Task<IEnumerable<uSyncDependency>> ConnectionAsync(Guid key, DependencyFlags flags)
         => await _aiService.GetConnectionAsync(key) is { } item

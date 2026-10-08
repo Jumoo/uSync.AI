@@ -12,9 +12,18 @@ Connections, guardrails, contexts, profiles, prompts and agents each get **Push 
 and **Pull from server…** in their actions menu, for users who have uSync.Complete's push or
 pull permission.
 
-With "Include dependencies" on, an item brings what it needs with it. Pushing an agent also
-sends its profile, that profile's connection, and the contexts and guardrails either of them
-use. Items arrive on the other server with the same Ids.
+An item brings what it needs with it, whether or not the publisher's "Include dependencies" is
+on. Pushing an agent also sends its profile, that profile's connection, and the contexts and
+guardrails either of them use. Items arrive on the other server with the same Ids.
+
+To follow the publisher's setting instead, turn `AlwaysIncludeDependencies` off:
+
+```json
+{ "uSync": { "AI": { "Publishing": { "AlwaysIncludeDependencies": false } } } }
+```
+
+Then an item sent without its dependencies still arrives, but its references to anything the
+other server doesn't have are dropped.
 
 A connection's API key is never sent. On a server that doesn't have the connection yet it
 arrives with a placeholder key and a warning; enter the real key there once. See the

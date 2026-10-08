@@ -9,6 +9,23 @@ public class uSyncAIOptions
 
     /// <summary>How connection settings are filtered before they are written to disk.</summary>
     public uSyncAIConnectionOptions Connections { get; set; } = new();
+
+    /// <summary>How AI items travel when uSync.Complete pushes or pulls them.</summary>
+    public uSyncAIPublishingOptions Publishing { get; set; } = new();
+}
+
+/// <summary>
+/// Controls what goes with an AI item when uSync.Complete pushes or pulls it.
+/// </summary>
+public class uSyncAIPublishingOptions
+{
+    /// <summary>
+    /// Always send what an AI item depends on (a prompt's profile, the profile's connection, its
+    /// contexts and guardrails), whatever the publisher's "include dependencies" setting says.
+    /// Without them the item still arrives, but its references to anything the target doesn't
+    /// have are dropped. Turn this off to follow the publisher's setting instead.
+    /// </summary>
+    public bool AlwaysIncludeDependencies { get; set; } = true;
 }
 
 /// <summary>

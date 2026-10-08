@@ -40,7 +40,7 @@ public class AIPromptDependencyChecker : ISyncDependencyChecker<AIPrompt>
             SyncAIDependencies.Item(uSyncAI.EntityTypes.Prompt, item.Id, item.Name, SyncAIDependencies.PromptOrder, flags),
         };
 
-        if (SyncAIDependencies.WantsDependencies(flags))
+        if (_dependencies.WantsDependencies(flags))
         {
             items.AddRange(await _dependencies.ProfileAsync(item.ProfileId, flags));
             items.AddRange(await _dependencies.GuardrailsAsync(item.GuardrailIds, flags));
