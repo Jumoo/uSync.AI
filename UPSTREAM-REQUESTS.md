@@ -39,6 +39,16 @@ change in Umbraco.AI or uSync itself than by a workaround here. Ranked roughly b
    `AIProfileSerializer.DeserializeSettings`, and will need updating by hand when a capability
    is added. Fix: make it public.
 
+5. **The management API accepts aliases the backoffice won't save.** The backoffice's alias
+   field requires `^[a-z0-9\-]+$`, but `POST /connections` (and profiles, prompts, agents)
+   accepted `openAiTest`. Seen on a 17.5.2 test site: once an item has such an alias, Save in
+   its workspace does nothing and shows no error - the locked alias input fails validation and
+   throws (`setValidity` called with an empty message) instead of showing its pattern message.
+   It matters to uSync because an import takes the alias from the file as is, so an item
+   created through the API on one site imports cleanly onto another and then can't be edited
+   there. Workaround: none in uSync.AI; rename the alias through the API. Fix: validate the
+   alias the same way on the server, and have the field show its message.
+
 ## uSync.Complete
 
 1. **The publisher assumes a backoffice entity type is a valid UDI entity type.** Umbraco.AI's
