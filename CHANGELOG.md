@@ -6,6 +6,8 @@ Notable changes to uSync.AI. Each release covers all seven packages (`uSync.AI`,
 
 ## Unreleased
 
+## 17.0.1 - 2026-10-26
+
 ### Fixed
 
 - The uSync dashboard showed the AI handlers as `aIConnections`, `aIGuardrails` and so on. They
@@ -14,6 +16,10 @@ Notable changes to uSync.AI. Each release covers all seven packages (`uSync.AI`,
 - AI connections had a blank icon on the uSync dashboard and in the uSync.Complete publisher.
   They now use the same plug icon as Umbraco.AI's Connections menu.
   ([#25](https://github.com/Jumoo/uSync.AI/pull/25))
+
+### Changed
+
+- Dependency updates (vite, and the nuget-dependencies group).
 
 ## 17.0.0 - 2026-10-08
 
