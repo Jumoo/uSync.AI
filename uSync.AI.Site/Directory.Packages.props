@@ -10,7 +10,7 @@
     <UmbracoAppLocalIcuVersion Condition="'$(UmbracoAppLocalIcuVersion)' == ''">72.1.0.3</UmbracoAppLocalIcuVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Clean" Version="7.*" />
+    <PackageVersion Include="Clean" Version="8.*" />
     <PackageVersion Include="Umbraco.AI" Version="17.*" />
     <PackageVersion Include="Umbraco.AI.Agent" Version="17.*" />
     <PackageVersion Include="Umbraco.AI.OpenAI" Version="17.*" />
